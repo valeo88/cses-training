@@ -1,6 +1,4 @@
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -34,26 +32,20 @@ public class GridPaths {
         Scanner sc = new Scanner(System.in);
         PrintWriter pw = new PrintWriter(System.out);
 
-        Map<Character, Integer> actions = new HashMap<>();
-        actions.put('D', BOARD_SIZE);
-        actions.put('U',-BOARD_SIZE);
-        actions.put('L',-1);
-        actions.put('R', 1);
-
         char[] path = sc.nextLine().toCharArray();
         int[] cnt = new int[1];
         int[] step = new int[1];
         boolean[][] visited = new boolean[BOARD_SIZE][BOARD_SIZE];
 
         // too slow
-        visit(START_ROW, START_COL, cnt, step, path, visited, actions);
+        visit(START_ROW, START_COL, cnt, step, path, visited);
 
         pw.println(cnt[0]);
         pw.flush();
 
     }
 
-    private static void visit(int r, int l, int[] cnt, int[] step, char[] path, boolean[][] visited, Map<Character, Integer> actions) {
+    private static void visit(int r, int l, int[] cnt, int[] step, char[] path, boolean[][] visited) {
         visited[r][l] = true;
         if (r == FINISH_ROW && l == FINISH_COL) {
             if (step[0] == 48) {
@@ -70,9 +62,9 @@ public class GridPaths {
             act[0] = path[step[0]];
         } else {
             act = new char[4];
-            act[0] = 'L';
-            act[1] = 'R';
-            act[2] = 'D';
+            act[0] = 'R';
+            act[1] = 'D';
+            act[2] = 'L';
             act[3] = 'U';
         }
         for (char c : act) {
@@ -100,7 +92,7 @@ public class GridPaths {
                 continue;
             } else {
                 step[0]++;
-                visit(nextRow, nextCol, cnt, step, path, visited, actions);
+                visit(nextRow, nextCol, cnt, step, path, visited);
                 step[0]--;
                 visited[nextRow][nextCol] = false;
             }
