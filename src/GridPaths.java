@@ -38,6 +38,7 @@ public class GridPaths {
         boolean[][] visited = new boolean[BOARD_SIZE][BOARD_SIZE];
 
         // too slow
+        visited[START_ROW][START_COL] = true;
         visit(START_ROW, START_COL, cnt, step, path, visited);
 
         pw.println(cnt[0]);
@@ -45,9 +46,8 @@ public class GridPaths {
 
     }
 
-    private static void visit(int r, int l, int[] cnt, int[] step, char[] path, boolean[][] visited) {
-        visited[r][l] = true;
-        if (r == FINISH_ROW && l == FINISH_COL) {
+    private static void visit(int row, int col, int[] cnt, int[] step, char[] path, boolean[][] visited) {
+        if (row == FINISH_ROW && col == FINISH_COL) {
             if (step[0] == 48) {
                 cnt[0]++;
             }
@@ -68,34 +68,37 @@ public class GridPaths {
             act[3] = 'U';
         }
         for (char c : act) {
-            int nextRow = r;
-            int nextCol = l;
-            switch (c) {
-                case 'L':
-                    nextCol--;
-                    break;
-                case 'R':
-                    nextCol++;
-                    break;
-                case 'U':
-                    nextRow--;
-                    break;
-                case 'D':
-                    nextRow++;
-                    break;
+            int nextRow = row;
+            int nextCol = col;
+            if (c == 'L') {
+                nextCol--;
+            } else if (c == 'R') {
+                nextCol++;
+            } else if (c == 'U') {
+                nextRow--;
+            } else if (c == 'D') {
+                nextRow++;
             }
             if (nextCol < 0
                     || nextCol > BOARD_SIZE - 1
                     || nextRow < 0
                     || nextRow > BOARD_SIZE - 1
-                    || visited[nextRow][nextCol]) {
+                    || visited[nextRow][nextCol]
+            || (nextCol >= 0 && nextCol <= BOARD_SIZE - 1
+                    && nextRow > 0 && nextRow < 6
+                    && visited[nextRow][nextCol] && !visited[nextRow-1][nextCol]
+                    && !visited[nextRow+1][nextCol])
+            || (nextRow >= 0 && nextRow <= BOARD_SIZE - 1
+                    && nextCol > 0 && nextCol < 6
+                    && visited[nextRow][nextCol] && !visited[nextRow][nextCol-1]
+                    && !visited[nextRow][nextCol-1])) {
                 continue;
-            } else {
-                step[0]++;
-                visit(nextRow, nextCol, cnt, step, path, visited);
-                step[0]--;
-                visited[nextRow][nextCol] = false;
             }
+            visited[nextRow][nextCol] = true;
+            step[0]++;
+            visit(nextRow, nextCol, cnt, step, path, visited);
+            step[0]--;
+            visited[nextRow][nextCol] = false;
         }
 
     }
