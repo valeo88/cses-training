@@ -1,5 +1,6 @@
 import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.Scanner;
 
 /**
@@ -24,6 +25,15 @@ import java.util.Scanner;
  * Print one integer: the number of applicants who will get an apartment.
  * */
 public class Apartments {
+
+    static Random rand = new Random();
+    static void shuffle(long[] aa, int n) {
+        for (int i = 1; i < n; i++) {
+            int j = rand.nextInt(i + 1);
+            long tmp = aa[i]; aa[i] = aa[j]; aa[j] = tmp;
+        }
+    }
+
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         PrintWriter pw = new PrintWriter(System.out);
@@ -41,29 +51,23 @@ public class Apartments {
             b[i] = sc.nextInt();
         }
 
+        shuffle(a, n);
+        shuffle(b, m);
         Arrays.sort(a);
         Arrays.sort(b);
 
         int cnt = 0;
 
-        int lastIdx = 0;
-        for (int i = 0; i < a.length; i++) {
-            long lb = a[i] - k;
-            long ub = a[i] + k;
-            for (int j = lastIdx; j < b.length; j++) {
-                long sq = b[j];
-                if (sq >= lb && sq <= ub) {
-                    cnt++;
-                    lastIdx = j + 1;
-                    break;
-                } else if (sq > ub) {
-                    break;
-                } else {
-                    lastIdx = j + 1;
-                }
+        for (int i = 0, j = 0; i < n && j < m; ) {
+            if (a[i] >= b[j] - k && a[i] <= b[j] + k) {
+                cnt++;
+                i++;
+                j++;
+            } else if (a[i] < b[j] - k) {
+                i++;
             }
-            if (lastIdx > b.length - 1) {
-                break;
+            else {
+                j++;
             }
         }
 
