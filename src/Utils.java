@@ -35,7 +35,7 @@ public class Utils {
         final int size = list.size();
         int start = 0;
         int end = size-1;
-        int mid = (start + end) / 2;
+        int mid = (start + end) >>> 1;
         while (true) {
             int cmp = list.get(mid).compareTo(value);
             if (cmp == 0 || cmp < 0) {
@@ -47,7 +47,7 @@ public class Utils {
                 if (end < start)
                     return mid;
             }
-            mid = (start + end) / 2;
+            mid = (start + end) >>> 1;
         }
     }
 
@@ -57,7 +57,7 @@ public class Utils {
         final int size = list.size();
         int start = 0;
         int end = size-1;
-        int mid = (start + end) / 2;
+        int mid = (start + end) >>> 1;
         while (true) {
             int cmp = list.get(mid).compareTo(value);
             if (cmp == 0 || cmp > 0) {
@@ -69,7 +69,7 @@ public class Utils {
                 if (end < start)
                     return mid < size - 1 ? mid + 1 : size;
             }
-            mid = (start + end) / 2;
+            mid = (start + end) >>> 1;
         }
     }
 }
