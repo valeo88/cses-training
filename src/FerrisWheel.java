@@ -45,6 +45,7 @@ public class FerrisWheel {
             }
         }
 
+        // two special cases
         if (allLessHalf) {
             System.out.println(n / 2);
             return;
@@ -54,9 +55,22 @@ public class FerrisWheel {
             return;
         }
 
+        // sort for binary search
         w.sort(Integer::compareTo);
 
+        // use binary search to find minimal number of gondolas
+        int p = -1;
+        for (int b = n; b >= 1; b /= 2) {
+            while (!ok(w, x, p+b)) p += b;
+        }
+        int k = p+1;
+
+        System.out.println(k);
+    }
+
+    static boolean ok(final List<Integer> list, final int x, final int baskets) {
         int ans = 0;
+        List<Integer> w = new ArrayList<>(list);
         while (w.size() > 0) {
             int large = w.get(w.size()-1);
             w.remove(w.size()-1);
@@ -67,10 +81,11 @@ public class FerrisWheel {
                 }
             }
             ans++;
+            if (ans > baskets) {
+                return false;
+            }
         }
-
-        System.out.println(ans);
-
+        return true;
     }
 
     /** Works like C++ upper_bound
