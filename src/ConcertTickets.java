@@ -1,9 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 /**
  * There are n concert tickets available, each with a certain price.
@@ -33,10 +31,12 @@ public class ConcertTickets {
         int n = Integer.parseInt(st.nextToken());
         int m = Integer.parseInt(st.nextToken());
 
-        List<Integer> prices = new ArrayList<>(n);
+        SortedMap<Integer, Integer> prices = new TreeMap<>();
         st = new StringTokenizer(br.readLine());
         while (st.hasMoreTokens()) {
-            prices.add(Integer.parseInt(st.nextToken()));
+            int val = Integer.parseInt(st.nextToken());
+            prices.putIfAbsent(val, 0);
+            prices.put(val, prices.get(val)+1);
         }
 
         List<Integer> customerMaxPrices = new ArrayList<>(m);
@@ -45,45 +45,31 @@ public class ConcertTickets {
             customerMaxPrices.add(Integer.parseInt(st.nextToken()));
         }
 
-        prices.sort(Integer::compareTo);
-
         for (int maxPrice: customerMaxPrices) {
             // calc ticket price for customer
             int size = prices.size();
             if (size > 0) {
-                int idx = lowerBound(prices, maxPrice);
-                if (idx == 0 && prices.get(idx) != maxPrice) {
+                if (prices.firstKey() > maxPrice) {
                     System.out.println(-1);
                     continue;
                 }
-                if (idx==size || prices.get(idx) > maxPrice) idx--;
-                System.out.println(prices.get(idx));
-                prices.remove(idx);
+                SortedMap<Integer, Integer> lessEqualPrices = prices.subMap(1, maxPrice + 1);
+                if (lessEqualPrices.size() == 0) {
+                    System.out.println(-1);
+                } else {
+                    Integer lastKey = lessEqualPrices.lastKey();
+                    int currValue = lessEqualPrices.get(lastKey);
+                    System.out.println(lastKey);
+                    currValue--;
+                    if (currValue>0) {
+                        lessEqualPrices.put(lastKey, currValue);
+                    } else {
+                        lessEqualPrices.remove(lastKey);
+                    }
+                }
             } else {
                 System.out.println(-1);
             }
-        }
-    }
-
-    /** Works like C++ lower_bound
-     * Get index of element equal or more than value */
-    public static <T> int lowerBound(List<? extends Comparable<? super T>> list, T value) {
-        final int size = list.size();
-        int start = 0;
-        int end = size-1;
-        int mid = (start + end) >>> 1;
-        while (true) {
-            int cmp = list.get(mid).compareTo(value);
-            if (cmp == 0 || cmp > 0) {
-                end = mid - 1;
-                if (end < start)
-                    return mid;
-            } else {
-                start = mid + 1;
-                if (end < start)
-                    return mid < size - 1 ? mid + 1 : size;
-            }
-            mid = (start + end) >>> 1;
         }
     }
 }
