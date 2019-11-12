@@ -35,6 +35,7 @@ public class Utils {
         final int size = list.size();
         int start = 0;
         int end = size-1;
+        if (end < 0) return 0;
         int mid = (start + end) >>> 1;
         while (true) {
             int cmp = list.get(mid).compareTo(value);
