@@ -1,7 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.util.*;
 
 /**
  * There is a street of length x whose positions are numbered 0,1,…,x.
@@ -27,11 +27,32 @@ public class TrafficLights {
         final int x = Integer.parseInt(st.nextToken());
         final int n = Integer.parseInt(st.nextToken());
 
+        SortedSet<Integer> points = new TreeSet<>();
+        points.add(0);
+        points.add(x);
+
+        SortedMap<Integer, Integer> passages = new TreeMap<>();
+        passages.put(x, 1);
+
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i< n; i++) {
             int p = Integer.parseInt(st.nextToken());
 
-            System.out.print(0);
+            int right = points.tailSet(p).first();
+            int left = points.headSet(p).last();
+            points.add(p);
+            int initialPassage = right - left;
+            int leftPassage = p - left;
+            int rightPassage = right - p;
+            if (passages.get(initialPassage)==1) {
+                passages.remove(initialPassage);
+            } else {
+                passages.put(initialPassage, passages.get(initialPassage)-1);
+            }
+            passages.put(leftPassage, passages.getOrDefault(leftPassage, 0) + 1);
+            passages.put(rightPassage, passages.getOrDefault(rightPassage, 0) + 1);
+
+            System.out.print(passages.lastKey());
             System.out.print(" ");
         }
 
