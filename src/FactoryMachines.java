@@ -38,14 +38,19 @@ public class FactoryMachines {
             min = Math.min(min, k[i]);
         }
 
-        // use binary search to find minimum of time
-        long p = -1;
-        for (long b = (long) products * min; b >= 1; b /= 2) {
-            if (!valid(b+p,products, k)) p += b;
+        // use binary search
+        long l = 0;
+        long r = (long) min * products;
+        while (r - l > 1) {
+            long mid = (l + r) / 2;
+            if (valid(mid, products, k)) {
+                r = mid;
+            } else {
+                l = mid;
+            }
         }
-        // sometimes binary search get wrong solution, so we need to check
-        if (valid(p+1, products, k))  System.out.println(p+1);
-        else System.out.println(p+2);
+
+        System.out.println(r);
     }
 
     private static boolean valid(long time, int products, int[] k) {
